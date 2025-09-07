@@ -12,7 +12,6 @@ from nltk.stem import WordNetLemmatizer
 
 nltk.download('punkt')
 nltk.download('wordnet')
-
 recognizer = sr.Recognizer()
 lemmatizer = WordNetLemmatizer()
 
@@ -66,7 +65,6 @@ def get_response_text(query):
             while next_index < len(sentences) and len(additional_sentences) < 2:
                 next_sentence = sentences[next_index].strip()
                 
-                # Stop if new topic or section starts (line ending with ':')
                 if next_sentence.endswith(':') or len(next_sentence.split()) < 8:
                     break
 
@@ -85,7 +83,7 @@ def chatbot(request):
     response = ''
 
     if request.method == 'POST':
-        action = request.POST.get('action')  # "speak" for microphone input
+        action = request.POST.get('action')
         user_query = request.POST.get('query', '').strip()
 
         if action == 'speak' and not user_query:
@@ -121,6 +119,4 @@ def chatbot(request):
         if action == 'speak':
             speak(response)
 
-
     return render(request, 'chatbot.html', {'response': response, 'conversation': conversation_history})
-
