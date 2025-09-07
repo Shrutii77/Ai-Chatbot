@@ -46,6 +46,11 @@ def normalize_text(text):
 # --- Generate response from knowledge base ---
 def get_response_text(query):
     normalized_query = normalize_text(query)
+    if normalized_query in ['ai', 'what is ai', 'define ai', 'introduction to ai']:
+        for sentence in sentences:
+            normalized_sentence = normalize_text(sentence)
+            if 'ai refers to' in normalized_sentence or 'ai is' in normalized_sentence:
+                return sentence  # Return the first good introductory sentence found
     query_terms = re.findall(r'\b\w+\b', normalized_query)
 
     # Reject overly vague queries
@@ -127,5 +132,6 @@ def chatbot(request):
         # Speak only for microphone input
         if action == 'speak':
             speak(response)
+
 
     return render(request, 'chatbot.html', {'response': response, 'conversation': conversation_history})
