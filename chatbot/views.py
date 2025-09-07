@@ -19,14 +19,12 @@ lemmatizer = WordNetLemmatizer()
 with open('ai_knowledge.txt', 'r', encoding='utf-8') as f:
     knowledge_base = f.read()
 
-
 sentences = sent_tokenize(knowledge_base)
 vectorizer = TfidfVectorizer()
 vectorized_sentences = vectorizer.fit_transform(sentences)
 
 conversation_history = []
 
-# --- Speak safely in a thread ---
 def speak(text):
     def run():
         engine = pyttsx3.init()  # Initialize engine inside thread
@@ -34,7 +32,6 @@ def speak(text):
         engine.runAndWait()
     threading.Thread(target=run).start()
 
-# --- Text normalization and lemmatization ---
 def normalize_text(text):
     text = text.lower()
     text = re.sub(r'[^a-z0-9\s]', '', text)
@@ -43,7 +40,6 @@ def normalize_text(text):
     lemmatized_terms = [lemmatizer.lemmatize(term) for term in terms]
     return ' '.join(lemmatized_terms).strip()
 
-# --- Generate response from knowledge base ---
 def get_response_text(query):
     normalized_query = normalize_text(query)
     if normalized_query in ['ai', 'what is ai', 'define ai', 'introduction to ai']:
@@ -53,7 +49,6 @@ def get_response_text(query):
                 return sentence  # Return the first good introductory sentence found
     query_terms = re.findall(r'\b\w+\b', normalized_query)
 
-    # Reject overly vague queries
     if len(query_terms) < 2 or normalized_query == 'future':
         return "Hmm… that’s interesting! But I’m only trained to talk about Artificial Intelligence. Try asking me about AI"
 
@@ -66,7 +61,6 @@ def get_response_text(query):
         if normalized_query in normalized_sentence:
             main_response = sentence
 
-            # Add 1 or 2 additional sentences *within the same topic only*
             additional_sentences = []
             next_index = i + 1
             while next_index < len(sentences) and len(additional_sentences) < 2:
@@ -86,7 +80,6 @@ def get_response_text(query):
 
     return "Hmm… that’s interesting! But I’m only trained to talk about Artificial Intelligence. Try asking me about AI"
 
-# --- Main chatbot view ---
 def chatbot(request):
     user_query = ''
     response = ''
@@ -95,7 +88,6 @@ def chatbot(request):
         action = request.POST.get('action')  # "speak" for microphone input
         user_query = request.POST.get('query', '').strip()
 
-        # Handle microphone input
         if action == 'speak' and not user_query:
             try:
                 with sr.Microphone() as source:
@@ -116,7 +108,6 @@ def chatbot(request):
                 speak(response)
                 return render(request, 'chatbot.html', {'response': response, 'conversation': conversation_history})
 
-        # Generate response
         if user_query.lower() == "can we speak out loud":
             response = "Sorry, I can't speak to you in voice yet. This feature will be available soon."
         elif user_query:
@@ -124,14 +115,12 @@ def chatbot(request):
         else:
             response = "Please type a query or use the microphone."
 
-        # Update conversation history
-
         conversation_history.append(('You 🤵‍♂️', user_query))
         conversation_history.append(('Bot 🤖', response))
 
-        # Speak only for microphone input
         if action == 'speak':
             speak(response)
 
 
     return render(request, 'chatbot.html', {'response': response, 'conversation': conversation_history})
+
