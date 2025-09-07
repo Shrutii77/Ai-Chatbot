@@ -47,26 +47,21 @@ An AI-powered Chatbot built with **Django**, designed to answer questions relate
     git clone https://github.com/your-username/ai-chatbot.git
     ```
 
-2. Install dependencies:
-    ```bash
-    pip install -r requirements.txt
-    ```
+2. Ensure the `ai_knowledge.txt` file is placed in the correct location.
 
-3. Ensure the `ai_knowledge.txt` file is placed in the correct location.
-
-4. Run migrations:
+3. Run migrations:
     ```bash
     python manage.py migrate
     ```
 
-5. Run the Django server:
+4. Run the Django server:
     ```bash
     python manage.py runserver
     ```
 
-6. Open your browser and visit:
+5. Open your browser and visit:
     ```
-    http://127.0.0.1:8000/chatbot/
+    http://127.0.0.1:8000/
     ```
 
 ---
